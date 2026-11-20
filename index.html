@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#111111">
+<title>SFL credential process - Short Form Learning Toolbox</title>
+<meta name="description" content="Step-by-step process for a Short Form Learning credential, from proposal to marks entry.">
+<style>
+:root{
+  --bg:#f5f4f0; --surface:#ffffff; --ink:#161616; --ink-2:#55544f; --line:#d9d7cf; --head:#111111; --head-ink:#ffffff;
+  --prop-fg:#4a2f94; --prop-bg:#ece8f9;
+  --sfl-fg:#0a5f4d;  --sfl-bg:#dff2ec;
+  --cdss-fg:#92381b; --cdss-bg:#fbe7e0;
+  --sm-fg:#8c2751;   --sm-bg:#fae4ec;
+  --acad-fg:#17508c; --acad-bg:#e1edf9;
+  --event-fg:#4b4a45; --event-bg:#eceae3;
+  --focus:#1b5a9a;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#141413; --surface:#1d1d1b; --ink:#f1f0ea; --ink-2:#aaa89f; --line:#3a3935; --head:#0b0b0b; --head-ink:#ffffff;
+    --prop-fg:#cfc4f6; --prop-bg:#2c2550;
+    --sfl-fg:#a5e3d2;  --sfl-bg:#123a31;
+    --cdss-fg:#f6c3b2; --cdss-bg:#4a2214;
+    --sm-fg:#f4bdd1;   --sm-bg:#4a1a2f;
+    --acad-fg:#b7d4f3; --acad-bg:#15324f;
+    --event-fg:#d3d1c7; --event-bg:#2c2b28;
+    --focus:#85b7eb;
+  }
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.skip{position:absolute;left:-999px;top:0;background:#fff;color:#000;padding:8px 12px;z-index:10}
+.skip:focus{left:8px;top:8px}
+
+header.top{background:var(--head);color:var(--head-ink);padding:28px 20px 40px}
+.wrap{max-width:900px;margin:0 auto}
+.crumb{font-size:14px;color:#bdbbb2;text-decoration:none;display:inline-block;margin-bottom:28px}
+.crumb:hover{color:#fff;text-decoration:underline}
+.kicker{font-size:14px;color:#bdbbb2;margin:0 0 4px}
+h1{font-family:Georgia,"Times New Roman",serif;font-weight:400;font-size:clamp(34px,6vw,52px);line-height:1.1;margin:0 0 14px;letter-spacing:-0.01em}
+h1 em{font-style:italic}
+.lede{max-width:56ch;margin:0;color:#d6d4cb;font-size:17px}
+
+main{padding:28px 20px 64px}
+.controls{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;margin-bottom:6px}
+.controls .label{font-size:14px;color:var(--ink-2);margin-right:2px}
+.chip-btn{font:inherit;font-size:14px;border:1px solid transparent;border-radius:999px;padding:4px 12px;cursor:pointer;line-height:1.5}
+.chip-btn[aria-pressed="true"]{border-color:currentColor;box-shadow:inset 0 0 0 1px currentColor}
+.g-prop{background:var(--prop-bg);color:var(--prop-fg)}
+.g-sfl{background:var(--sfl-bg);color:var(--sfl-fg)}
+.g-cdss{background:var(--cdss-bg);color:var(--cdss-fg)}
+.g-sm{background:var(--sm-bg);color:var(--sm-fg)}
+.g-acad{background:var(--acad-bg);color:var(--acad-fg)}
+.g-event{background:var(--event-bg);color:var(--event-fg)}
+.toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin:14px 0 4px}
+.toolbar .hint{font-size:14px;color:var(--ink-2);margin:0}
+.text-btn{font:inherit;font-size:14px;background:none;border:1px solid var(--line);border-radius:6px;padding:5px 12px;color:var(--ink);cursor:pointer}
+.text-btn:hover{border-color:var(--ink-2)}
+
+section.phase{margin-top:36px}
+section.phase h2{font-family:Georgia,"Times New Roman",serif;font-weight:400;font-size:26px;margin:0 0 4px;letter-spacing:-0.005em}
+section.phase .phase-note{margin:0 0 14px;color:var(--ink-2);font-size:15px}
+
+ol.steps{list-style:none;margin:0;padding:0}
+li.step{position:relative;padding:0 0 10px 52px}
+li.step::before{content:"";position:absolute;left:17px;top:0;bottom:-10px;width:2px;background:var(--line)}
+li.step:last-child::before{bottom:auto;height:24px}
+li.step.branch{padding-left:96px}
+li.step.branch::before{left:17px}
+li.step.branch::after{content:"";position:absolute;left:17px;top:24px;width:50px;border-top:2px dashed var(--line)}
+.marker{position:absolute;left:2px;top:6px;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font-size:14px;font-weight:600;z-index:1}
+li.step.branch .marker{left:58px;width:22px;height:22px;top:13px;font-size:11px;border:2px dashed currentColor;background:var(--surface)!important}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;transition:opacity .15s}
+.step-head{all:unset;box-sizing:border-box;display:flex;width:100%;gap:12px;align-items:center;padding:12px 14px;cursor:pointer;border-radius:10px}
+.step-head:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.step-head:hover{background:color-mix(in srgb,var(--ink) 4%,transparent)}
+.step-main{flex:1;min-width:0}
+.step-title{display:block;font-weight:600;font-size:17px;line-height:1.35}
+.step-sum{display:block;color:var(--ink-2);font-size:15px;line-height:1.45}
+.who{font-size:13px;border-radius:999px;padding:2px 10px;white-space:nowrap;align-self:flex-start;margin-top:2px}
+.link-tag{font-size:12px;border:1px solid var(--line);border-radius:999px;padding:1px 9px;color:var(--ink-2);white-space:nowrap;align-self:flex-start;margin-top:3px}
+.chev{width:10px;height:10px;border-right:2px solid var(--ink-2);border-bottom:2px solid var(--ink-2);transform:rotate(45deg);transition:transform .15s;flex:none;margin:0 4px 4px 2px}
+.step-head[aria-expanded="true"] .chev{transform:rotate(-135deg);margin-bottom:-2px}
+.panel{padding:2px 16px 16px 16px;border-top:1px solid var(--line);margin:0 14px;padding-left:2px;padding-right:2px}
+.panel[hidden]{display:none}
+.panel p{margin:12px 0 0;max-width:62ch}
+dl.facts{margin:12px 0 0;display:grid;grid-template-columns:max-content 1fr;gap:6px 18px}
+dl.facts dt{color:var(--ink-2);font-size:14px}
+dl.facts dd{margin:0;font-size:15px;overflow-wrap:anywhere}
+.open-link{display:inline-block;margin-top:14px;padding:8px 14px;border-radius:6px;background:var(--ink);color:var(--bg);text-decoration:none;font-size:15px}
+.open-link:hover{text-decoration:underline}
+.access{margin:8px 0 0;font-size:14px;color:var(--ink-2)}
+
+.dimmed .card{opacity:.35}
+.dimmed .card.match{opacity:1}
+
+.view-toggle{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.view-toggle button{font:inherit;font-size:14px;background:var(--surface);color:var(--ink);border:0;padding:6px 16px;cursor:pointer}
+.view-toggle button+button{border-left:1px solid var(--line)}
+.view-toggle button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+#flow{margin-top:24px}
+#flow[hidden]{display:none}
+.flow-scroll{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface);padding:8px}
+.flow-scroll svg{display:block;width:100%;min-width:600px;height:auto}
+.fnode{cursor:pointer}
+.fnode:focus-visible{outline:none}
+.fnode:focus-visible rect.box{stroke-width:3;stroke:var(--focus)}
+.fnode rect.box{stroke-width:1;transition:opacity .15s}
+.fnode.sel rect.box{stroke-width:3}
+.fnode text{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;pointer-events:none}
+.fnode text.t1{font-size:14px;font-weight:600}
+.fnode text.t2{font-size:12px}
+.fn-prop rect.box{fill:var(--prop-bg);stroke:var(--prop-fg)} .fn-prop text{fill:var(--prop-fg)}
+.fn-sfl rect.box{fill:var(--sfl-bg);stroke:var(--sfl-fg)} .fn-sfl text{fill:var(--sfl-fg)}
+.fn-cdss rect.box{fill:var(--cdss-bg);stroke:var(--cdss-fg)} .fn-cdss text{fill:var(--cdss-fg)}
+.fn-sm rect.box{fill:var(--sm-bg);stroke:var(--sm-fg)} .fn-sm text{fill:var(--sm-fg)}
+.fn-acad rect.box{fill:var(--acad-bg);stroke:var(--acad-fg)} .fn-acad text{fill:var(--acad-fg)}
+.fn-event rect.box{fill:var(--event-bg);stroke:var(--event-fg)} .fn-event text{fill:var(--event-fg)}
+.fnode .tag rect{fill:var(--surface);stroke:var(--ink-2);stroke-width:1}
+.fnode .tag text{fill:var(--ink-2);font-size:12px;font-weight:400}
+.edge{fill:none;stroke:var(--ink-2);stroke-width:1.5}
+.edge.dash{stroke-dasharray:4 3}
+.elabel{fill:var(--ink-2);font:12px system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+#flow.dimmed .fnode{opacity:.3}
+#flow.dimmed .fnode.match{opacity:1}
+#flow-detail{margin-top:16px;padding:16px 18px;background:var(--surface);border:1px solid var(--line);border-radius:10px}
+#flow-detail h3{margin:0 0 2px;font-size:18px}
+#flow-detail .panel{border:0;margin:0;padding:0}
+#flow-detail .sum{margin:4px 0 0;color:var(--ink-2)}
+#flow-detail .empty{margin:0;color:var(--ink-2)}
+.flow-note{margin:10px 2px 0;font-size:14px;color:var(--ink-2)}
+footer{border-top:1px solid var(--line);padding:20px;color:var(--ink-2);font-size:14px}
+footer .wrap{display:flex;flex-wrap:wrap;gap:6px 24px;justify-content:space-between}
+
+@media (max-width:620px){
+  li.step{padding-left:44px}
+  li.step.branch{padding-left:76px}
+  li.step.branch .marker{left:46px}
+  li.step.branch::after{width:30px}
+  .step-head{flex-wrap:wrap}
+  .who{order:3}
+  dl.facts{grid-template-columns:1fr;gap:0}
+  dl.facts dd{margin-bottom:8px}
+}
+@media print{
+  header.top{background:none;color:#000;padding:0 0 12px}
+  .crumb,.controls,.toolbar{display:none}
+  .lede,.kicker{color:#333}
+  .panel[hidden]{display:block}
+  .chev{display:none}
+  .card{break-inside:avoid}
+  body{background:#fff;color:#000}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main-content">Skip to main content</a>
+
+<header class="top">
+  <div class="wrap">
+    <a class="crumb" href="https://okutzner.github.io/SFL-Toolbox/">&larr; SFL Toolbox</a>
+    <p class="kicker">Curtin University &middot; Short Form Learning</p>
+    <h1>Credential <em>process</em></h1>
+    <p class="lede">From an approved idea to marks in S1: who does what, in what order, and where to find each tool. Select a step for the detail.</p>
+  </div>
+</header>
+
+<main id="main-content">
+  <div class="wrap">
+    <div class="controls" role="group" aria-label="Highlight steps by owner">
+      <span class="label">Highlight by owner:</span>
+    </div>
+    <div class="toolbar">
+      <div class="view-toggle" role="group" aria-label="Choose a view">
+        <button type="button" id="view-list" aria-pressed="true">List</button>
+        <button type="button" id="view-flow" aria-pressed="false">Flowchart</button>
+      </div>
+      <div class="tools" id="list-tools">
+        <p class="hint">Steps tagged &ldquo;Link&rdquo; open a live page or tool.</p>
+        <button type="button" class="text-btn" id="expand-all">Expand all</button>
+        <button type="button" class="text-btn" id="collapse-all">Collapse all</button>
+      </div>
+    </div>
+    <div id="phases"></div>
+    <div id="flow" hidden>
+      <div class="flow-scroll">
+        <svg id="flow-svg" viewBox="0 0 680 810" role="group" aria-label="Flowchart of the SFL credential process. Each box is a button that shows the step detail below."></svg>
+      </div>
+      <p class="flow-note">Select a box for its detail. Boxes tagged &ldquo;Link&rdquo; have a live page or tool. The dashed arrow is a separate track: the SFL team carries on without waiting.</p>
+      <div id="flow-detail" aria-live="polite"><p class="empty">Select a box to see its detail here.</p></div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Short Form Learning &middot; Curtin University</span>
+    <span id="updated"></span>
+  </div>
+</footer>
+
+<script>
+/* ------------------------------------------------------------------
+   EDIT HERE. Everything on the page is generated from the data below.
+   - LINKS: change a URL in one place.
+   - OWNERS: the colour groups used for chips and filtering.
+   - PHASES: the sections and steps. Set branch:true for a side track.
+   ------------------------------------------------------------------ */
+var LAST_UPDATED = "November 2026";
+
+var LINKS = {
+  proposalForm: "https://supportu.curtin.edu.au/sp?id=sc_cat_item&sys_id=15e15219c36a32105d761a4ed4013197",
+  credsNumbering: "https://curtin-my.sharepoint.com/:x:/r/personal/301211a_curtin_edu_au/_layouts/15/Doc.aspx?action=edit&sourcedoc=%7Bf610f0c7-da77-44fb-b6b5-38342a9efa28%7D&wdExp=TEAMS-TREATMENT&web=1&share=cQrH8BD2d9r7RLa1ODQqnvooEgUCozG4CDQnkV0Uv5bRWJBLrg",
+  sisExport: "https://sfl-sis-import-generator.onrender.com/dashboard",
+  teamsChannel: "https://teams.microsoft.com/l/channel/19%3AR_RspHzBejD8z6MXSugshAUfcagmI5nJeqHj0g_Fu-I1%40thread.tacv2/General?groupId=fa18b6c2-7c63-4437-8faf-ec02a7a9e0c3&tenantId=5a740cd7-5768-4d09-ae13-f706b09fa22c"
+};
+
+var OWNERS = {
+  prop:  { label: "Proposer and PLG" },
+  sfl:   { label: "SFL team" },
+  cdss:  { label: "CDSS Enrolments" },
+  sm:    { label: "Student Management" },
+  acad:  { label: "Course facilitator or academic" },
+  event: { label: "Event or outcome" }
+};
+
+var PHASES = [
+  {
+    title: "Proposal and approval",
+    note: "An idea becomes an approved credential.",
+    steps: [
+      {
+        id: "proposal", group: "prop", who: "Proposer",
+        title: "Fill out the SFL proposal form",
+        summary: "The proposer submits the idea on the proposal form.",
+        body: ["The proposer completes the current SFL proposal form on SupportU. A newer SFL Proposals tool is listed on the toolbox as in development."],
+        link: { label: "Open the proposal form", url: LINKS.proposalForm, access: "Curtin staff sign-in required." }
+      },
+      {
+        id: "plg", group: "prop", who: "PLG",
+        title: "PLG decides",
+        summary: "Approved or not approved, recorded in the PLG minutes.",
+        facts: [
+          ["If approved", "The approval is a minuted PLG document. It goes to the SFL team."],
+          ["If not approved", "The idea goes back to the proposer."]
+        ]
+      },
+      {
+        id: "returned", group: "prop", who: "Proposer", branch: true,
+        title: "If not approved",
+        summary: "Returned to the proposer, who can revise and resubmit the form."
+      }
+    ]
+  },
+  {
+    title: "SFL team set-up",
+    note: "Once the idea is approved, the SFL team builds the course records.",
+    steps: [
+      {
+        id: "pickup", group: "sfl", who: "SFL team member",
+        title: "Pick up the approval",
+        summary: "One of the SFL team takes the minuted PLG approval.",
+        body: ["Get the course code allocated as soon as possible after approval. It avoids hold-ups further down the track."]
+      },
+      {
+        id: "code", group: "sfl", who: "SFL team",
+        title: "Allocate the course code",
+        summary: "Take an unused number and record it on the Creds Numbering sheet.",
+        facts: [
+          ["Format", "CC-P1001 for postgraduate, CC-U1001 for undergraduate (P or U, then the number)"],
+          ["Number", "An unused number from the Creds Numbering spreadsheet"],
+          ["Record it", "Add the new code to the Creds Numbering spreadsheet"],
+          ["Used again", "In the SIS field on the Canvas shell settings page"]
+        ],
+        link: { label: "Open Creds Numbering", url: LINKS.credsNumbering, access: "Needs access to the spreadsheet." }
+      },
+      {
+        id: "email", group: "sfl", who: "SFL team",
+        title: "Email CDSS Enrolments",
+        summary: "Send the course code, PLG approval record and course details.",
+        facts: [
+          ["To", { text: "cdss.enrolments@curtin.edu.au", href: "mailto:cdss.enrolments@curtin.edu.au" }],
+          ["Include", "Course code, PLG approval record, course details"]
+        ]
+      },
+      {
+        id: "s1setup", group: "cdss", who: "CDSS Enrolments", branch: true,
+        title: "CDSS sets up the course in S1",
+        summary: "A separate track, done before Admissions.",
+        body: ["CDSS does not confirm back. The SFL team carries on with the Catalogue listing and Canvas shell without waiting."]
+      },
+      {
+        id: "catalogue", group: "sfl", who: "SFL team",
+        title: "Create the Catalogue listing",
+        summary: "All the course details. The listing points to the Canvas shell."
+      },
+      {
+        id: "canvas", group: "sfl", who: "SFL team",
+        title: "Create the Canvas shell",
+        summary: "Enter the course code in the SIS field on the settings page.",
+        body: ["The Catalogue listing points to this shell. The course code in the SIS field is what links the shell to the student records later."]
+      }
+    ]
+  },
+  {
+    title: "Delivery",
+    note: "",
+    steps: [
+      {
+        id: "run", group: "event", who: "Credential",
+        title: "The credential runs",
+        summary: "Students take the credential. Student admin starts once it has run."
+      }
+    ]
+  },
+  {
+    title: "Student admin",
+    note: "Student details go into S1 so marks can be entered.",
+    steps: [
+      {
+        id: "export", group: "sfl", who: "SFL team",
+        title: "Export the student details",
+        summary: "Use the SIS export tool on Catalogue and Canvas data.",
+        body: ["Once the credential has run, export the student details from the Catalogue and Canvas using the SIS export tool."],
+        link: { label: "Open the SIS export tool", url: LINKS.sisExport, access: "Restricted access: authorised staff only." }
+      },
+      {
+        id: "teams", group: "sfl", who: "SFL team",
+        title: "Post the details in Teams",
+        summary: "Share the export in the Curtin Creds Adm and Enr chat.",
+        link: { label: "Open Curtin Creds Adm and Enr", url: LINKS.teamsChannel, access: "Needs access to the Teams channel." }
+      },
+      {
+        id: "admissions", group: "sm", who: "Student Management",
+        title: "Admissions",
+        summary: "Students go to Admissions first.",
+        facts: [
+          ["Contact", "Tammie Tan, Team Leader Admissions, Student Management"],
+          ["Email", { text: "Tammie.Tan@curtin.edu.au", href: "mailto:Tammie.Tan@curtin.edu.au" }]
+        ],
+        body: ["Current contact. Check the name is still correct before sending anything."]
+      },
+      {
+        id: "enrolments", group: "sm", who: "Student Management",
+        title: "Enrolments",
+        summary: "Then students are enrolled.",
+        facts: [
+          ["Contact", "Samuel Chen, Team Leader Enrolments, Student Management"],
+          ["Email", { text: "weisen.chen@curtin.edu.au", href: "mailto:weisen.chen@curtin.edu.au" }]
+        ],
+        body: ["Current contact. Check the name is still correct before sending anything."]
+      },
+      {
+        id: "marks", group: "acad", who: "Course facilitator or academic",
+        title: "Enter marks in S1",
+        summary: "Once students are in S1, the person teaching the course enters marks."
+      }
+    ]
+  }
+];
+
+/* ---------------- rendering ---------------- */
+var phasesEl = document.getElementById("phases");
+var controlsEl = document.querySelector(".controls");
+var activeGroup = null;
+var heads = [];
+
+function el(tag, cls, text){
+  var e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (text != null) e.textContent = text;
+  return e;
+}
+
+function buildPanel(step, id){
+  var p = el("div", "panel");
+  p.id = id;
+  p.hidden = true;
+  (step.body || []).forEach(function(t){ p.appendChild(el("p", null, t)); });
+  if (step.facts){
+    var dl = el("dl", "facts");
+    step.facts.forEach(function(f){
+      dl.appendChild(el("dt", null, f[0]));
+      var dd = el("dd");
+      if (typeof f[1] === "object"){
+        var a = el("a", null, f[1].text);
+        a.href = f[1].href;
+        dd.appendChild(a);
+      } else {
+        dd.textContent = f[1];
+      }
+      dl.appendChild(dd);
+    });
+    p.appendChild(dl);
+  }
+  if (step.link){
+    var a = el("a", "open-link", step.link.label);
+    a.href = step.link.url;
+    a.target = "_blank";
+    a.rel = "noopener noreferrer";
+    p.appendChild(a);
+    if (step.link.access) p.appendChild(el("p", "access", step.link.access));
+  }
+  return p;
+}
+
+var n = 0;
+var STEPS = {};
+PHASES.forEach(function(phase){
+  var sec = el("section", "phase");
+  sec.appendChild(el("h2", null, phase.title));
+  if (phase.note) sec.appendChild(el("p", "phase-note", phase.note));
+  var ol = el("ol", "steps");
+  phase.steps.forEach(function(step){
+    STEPS[step.id] = step;
+    var li = el("li", "step" + (step.branch ? " branch" : ""));
+    var marker = el("span", "marker g-" + step.group, step.branch ? "" : String(++n));
+    marker.setAttribute("aria-hidden", "true");
+    li.appendChild(marker);
+
+    var card = el("div", "card");
+    card.dataset.group = step.group;
+    var panelId = "panel-" + step.id;
+
+    var head = el("button", "step-head");
+    head.type = "button";
+    head.setAttribute("aria-expanded", "false");
+    head.setAttribute("aria-controls", panelId);
+
+    var main = el("span", "step-main");
+    main.appendChild(el("span", "step-title", step.title));
+    main.appendChild(el("span", "step-sum", step.summary));
+    head.appendChild(main);
+    head.appendChild(el("span", "who g-" + step.group, step.who));
+    if (step.link) head.appendChild(el("span", "link-tag", "Link"));
+    head.appendChild(el("span", "chev"));
+    card.appendChild(head);
+
+    var panel = buildPanel(step, panelId);
+    card.appendChild(panel);
+    head.addEventListener("click", function(){
+      var open = head.getAttribute("aria-expanded") === "true";
+      head.setAttribute("aria-expanded", String(!open));
+      panel.hidden = open;
+    });
+    heads.push({ head: head, panel: panel });
+
+    li.appendChild(card);
+    ol.appendChild(li);
+  });
+  sec.appendChild(ol);
+  phasesEl.appendChild(sec);
+});
+
+/* owner filter chips */
+Object.keys(OWNERS).forEach(function(key){
+  var b = el("button", "chip-btn g-" + key, OWNERS[key].label);
+  b.type = "button";
+  b.setAttribute("aria-pressed", "false");
+  b.addEventListener("click", function(){
+    activeGroup = (activeGroup === key) ? null : key;
+    controlsEl.querySelectorAll(".chip-btn").forEach(function(x){ x.setAttribute("aria-pressed", "false"); });
+    if (activeGroup) b.setAttribute("aria-pressed", "true");
+    [phasesEl, document.getElementById("flow")].forEach(function(root){
+      root.classList.toggle("dimmed", !!activeGroup);
+      root.querySelectorAll("[data-group]").forEach(function(c){
+        c.classList.toggle("match", c.dataset.group === activeGroup);
+      });
+    });
+  });
+  controlsEl.appendChild(b);
+});
+
+function setAll(open){
+  heads.forEach(function(h){
+    h.head.setAttribute("aria-expanded", String(open));
+    h.panel.hidden = !open;
+  });
+}
+document.getElementById("expand-all").addEventListener("click", function(){ setAll(true); });
+document.getElementById("collapse-all").addEventListener("click", function(){ setAll(false); });
+/* ---------------- flowchart view ----------------
+   Each box maps to a step id above (step), so the detail stays in one place.
+   Edit x/y/w/h to move a box; edit EDGES to change the arrows. */
+var FLOW_NODES = [
+  { step: "proposal",  x: 40,  y: 52,  w: 160, h: 56, r: 8,  lines: ["SFL proposal form", "Filled out by proposer"], link: true },
+  { step: "plg",       x: 260, y: 52,  w: 160, h: 56, r: 28, lines: ["PLG approved?", "Minuted document"] },
+  { step: "pickup",    x: 480, y: 52,  w: 160, h: 56, r: 8,  lines: ["SFL team member", "Picks up approval"] },
+  { step: "returned",  x: 240, y: 150, w: 200, h: 44, r: 8,  lines: ["Returned to proposer"] },
+  { step: "code",      x: 520, y: 240, w: 120, h: 72, r: 8,  lines: ["Course code", "Unused number", "CC-[P/U]1001"] },
+  { step: "email",     x: 240, y: 240, w: 240, h: 72, r: 8,  lines: ["Email CDSS Enrolments", "Code, PLG record, details", "cdss.enrolments@curtin.edu.au"] },
+  { step: "catalogue", x: 40,  y: 240, w: 160, h: 72, r: 8,  lines: ["Catalogue listing", "All course details", "Points to Canvas"] },
+  { step: "code", id: "credsnum", x: 480, y: 348, w: 160, h: 56, r: 8, lines: ["Creds Numbering", "Code recorded here"], link: true },
+  { step: "s1setup",   x: 260, y: 344, w: 160, h: 56, r: 8,  lines: ["CDSS sets up S1", "Before Admissions"] },
+  { step: "canvas",    x: 40,  y: 440, w: 160, h: 56, r: 8,  lines: ["Canvas shell", "Code in SIS field"] },
+  { step: "run",       x: 260, y: 440, w: 160, h: 56, r: 8,  lines: ["Credential runs", "Delivery to students"] },
+  { step: "export",    x: 480, y: 440, w: 160, h: 56, r: 8,  lines: ["SIS export tool", "Exports student data"], link: true },
+  { step: "teams",     x: 480, y: 588, w: 160, h: 56, r: 8,  lines: ["Post in Teams chat", "Creds Adm and Enr"], link: true },
+  { step: "admissions",x: 200, y: 580, w: 240, h: 72, r: 8,  lines: ["Admissions", "Tammie Tan, Team Leader", "Tammie.Tan@curtin.edu.au"] },
+  { step: "enrolments",x: 40,  y: 720, w: 240, h: 72, r: 8,  lines: ["Enrolments", "Samuel Chen, Team Leader", "weisen.chen@curtin.edu.au"] },
+  { step: "marks",     x: 330, y: 720, w: 250, h: 72, r: 8,  lines: ["Marks entered in S1", "Course facilitator or academic"] }
+];
+var FLOW_EDGES = [
+  { d: "M200 80 L258 80" },
+  { d: "M420 80 L478 80" },
+  { d: "M340 108 L340 148" },
+  { d: "M240 172 L120 172 L120 110" },
+  { d: "M580 108 L580 238" },
+  { d: "M520 276 L482 276" },
+  { d: "M240 276 L202 276" },
+  { d: "M120 312 L120 438" },
+  { d: "M580 312 L580 346" },
+  { d: "M340 312 L340 342", dash: true },
+  { d: "M200 468 L258 468" },
+  { d: "M420 468 L478 468" },
+  { d: "M560 496 L560 586" },
+  { d: "M480 616 L442 616" },
+  { d: "M320 652 L320 686 L160 686 L160 718" },
+  { d: "M280 756 L328 756" }
+];
+var FLOW_LABELS = [
+  { t: "Yes", x: 450, y: 70, a: "middle" },
+  { t: "No",  x: 352, y: 130, a: "start" }
+];
+
+var SVGNS = "http://www.w3.org/2000/svg";
+function s(tag, attrs, text){
+  var e = document.createElementNS(SVGNS, tag);
+  for (var k in attrs) e.setAttribute(k, attrs[k]);
+  if (text != null) e.textContent = text;
+  return e;
+}
+
+var flowSvg = document.getElementById("flow-svg");
+var flowDetail = document.getElementById("flow-detail");
+var selectedNode = null;
+
+var defs = s("defs");
+var marker = s("marker", { id: "arrowhead", viewBox: "0 0 10 10", refX: "8", refY: "5", markerWidth: "6", markerHeight: "6", orient: "auto-start-reverse" });
+marker.appendChild(s("path", { d: "M2 1L8 5L2 9", fill: "none", stroke: "context-stroke", "stroke-width": "1.5", "stroke-linecap": "round", "stroke-linejoin": "round" }));
+defs.appendChild(marker);
+flowSvg.appendChild(defs);
+
+FLOW_EDGES.forEach(function(e){
+  flowSvg.appendChild(s("path", { d: e.d, class: "edge" + (e.dash ? " dash" : ""), "marker-end": "url(#arrowhead)" }));
+});
+FLOW_LABELS.forEach(function(l){
+  flowSvg.appendChild(s("text", { x: l.x, y: l.y, "text-anchor": l.a, class: "elabel" }, l.t));
+});
+
+function showFlowDetail(stepId, node){
+  var step = STEPS[stepId];
+  if (selectedNode) selectedNode.classList.remove("sel");
+  selectedNode = node;
+  node.classList.add("sel");
+  flowDetail.textContent = "";
+  var h = el("h3", null, step.title);
+  flowDetail.appendChild(h);
+  flowDetail.appendChild(el("span", "who g-" + step.group, step.who));
+  flowDetail.appendChild(el("p", "sum", step.summary));
+  var p = buildPanel(step, "flow-detail-panel");
+  p.hidden = false;
+  flowDetail.appendChild(p);
+}
+
+FLOW_NODES.forEach(function(nd){
+  var step = STEPS[nd.step];
+  var g = s("g", { class: "fnode fn-" + step.group, tabindex: "0", role: "button", "aria-label": nd.lines[0] + (nd.link ? ", has a link" : "") });
+  g.dataset.group = step.group;
+  g.appendChild(s("rect", { class: "box", x: nd.x, y: nd.y, width: nd.w, height: nd.h, rx: nd.r }));
+  var n = nd.lines.length, cy = nd.y + nd.h / 2, gap = (n === 3) ? 19 : 20;
+  nd.lines.forEach(function(line, i){
+    var y = cy + (i - (n - 1) / 2) * gap;
+    g.appendChild(s("text", { x: nd.x + nd.w / 2, y: y, "text-anchor": "middle", "dominant-baseline": "central", class: i === 0 ? "t1" : "t2" }, line));
+  });
+  if (nd.link){
+    var tag = s("g", { class: "tag" });
+    tag.appendChild(s("rect", { x: nd.x + nd.w - 48, y: nd.y - 9, width: 44, height: 18, rx: 9 }));
+    tag.appendChild(s("text", { x: nd.x + nd.w - 26, y: nd.y, "text-anchor": "middle", "dominant-baseline": "central" }, "Link"));
+    g.appendChild(tag);
+  }
+  function choose(){ showFlowDetail(nd.step, g); }
+  g.addEventListener("click", choose);
+  g.addEventListener("keydown", function(ev){
+    if (ev.key === "Enter" || ev.key === " "){ ev.preventDefault(); choose(); }
+  });
+  flowSvg.appendChild(g);
+});
+
+/* view toggle */
+var listBtn = document.getElementById("view-list");
+var flowBtn = document.getElementById("view-flow");
+var flowEl = document.getElementById("flow");
+var listTools = document.getElementById("list-tools");
+function setView(v){
+  var isFlow = (v === "flowchart");
+  flowEl.hidden = !isFlow;
+  phasesEl.hidden = isFlow;
+  listTools.hidden = isFlow;
+  listBtn.setAttribute("aria-pressed", String(!isFlow));
+  flowBtn.setAttribute("aria-pressed", String(isFlow));
+  try {
+    if (history.replaceState) history.replaceState(null, "", isFlow ? "#flowchart" : "#list");
+  } catch (err) {
+    /* Sandboxed previews block address changes. The toggle still works without it. */
+  }
+}
+listBtn.addEventListener("click", function(){ setView("list"); });
+flowBtn.addEventListener("click", function(){ setView("flowchart"); });
+setView(location.hash === "#flowchart" ? "flowchart" : "list");
+
+document.getElementById("updated").textContent = "Last updated " + LAST_UPDATED;
+</script>
+</body>
+</html>
